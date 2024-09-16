@@ -18,7 +18,13 @@
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
-      "semicolons": "asNeeded"
+      "semicolons": "asNeeded",
+      "indentStyle": "space"
+    }
+  },
+  "json": {
+    "formatter": {
+      "indentStyle": "space"
     }
   }
 }
