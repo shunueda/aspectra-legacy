@@ -25,3 +25,8 @@ jobs:
       - run: pnpm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: release ${{ github.event.release.tag_name }}"
+          branch: ${{ github.event.repository.default_branch }}
+          file_pattern: package.json
