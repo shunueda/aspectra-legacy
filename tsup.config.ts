@@ -3,12 +3,16 @@ import { compilerOptions } from './tsconfig.json'
 
 export default defineConfig({
   entry: ['src/index.ts'],
-  splitting: true,
-  sourcemap: true,
-  clean: true,
+  target: compilerOptions.target as Options['target'],
   minify: true,
   keepNames: true,
   format: 'esm',
+  splitting: true,
+  sourcemap: true,
+  clean: true,
   dts: true,
-  target: compilerOptions.target as Options['target'],
+  shims: true,
+  treeshake: true,
+  cjsInterop: false,
+  removeNodeProtocol: false,
 })
