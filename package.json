@@ -25,6 +25,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.1",
     "@types/node": "^22.5.5",
+    "@types/object-hash": "^3.0.6",
     "commitizen": "^4.3.0",
     "cz-conventional-changelog": "^3.3.0",
     "lefthook": "^1.7.15",
@@ -39,5 +40,8 @@
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
+  },
+  "dependencies": {
+    "object-hash": "^3.0.0"
   }
 }
