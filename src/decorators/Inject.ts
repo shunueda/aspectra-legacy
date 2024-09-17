@@ -9,8 +9,8 @@ interface Injectable<T> extends Class<T> {
 export function Inject<T, K extends keyof T>(injectable: Injectable<T[K]>) {
   return (_: unknown, context: ClassFieldDecoratorContext<T, T[K]>) => {
     context.addInitializer(function () {
-      const field = context.name as K
-      this[field] = injectable[identifier] ||= new injectable()
+      const name = context.name as K
+      this[name] = injectable[identifier] ||= new injectable()
     })
   }
 }
