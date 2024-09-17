@@ -1,10 +1,10 @@
 import { deepStrictEqual, equal, throws } from 'node:assert'
 import { beforeEach, describe, test } from 'node:test'
-import { Before } from 'aspectra'
+import { After } from 'aspectra'
 
 enum Call {
-  BEFORE = 0,
-  BEFORE2 = 1,
+  AFTER = 0,
+  AFTER2 = 1,
   METHOD = 2,
 }
 
@@ -13,15 +13,15 @@ const calls: Call[] = []
 class Test {
   public value = 0
 
-  @Before(() => {
-    calls.push(Call.BEFORE)
+  @After(() => {
+    calls.push(Call.AFTER)
   })
   noArg() {
     calls.push(Call.METHOD)
   }
 
-  @Before((a: number, b: number, thisArg: Test) => {
-    calls.push(Call.BEFORE)
+  @After((a: number, b: number, thisArg: Test) => {
+    calls.push(Call.AFTER)
     equal(a, 1)
     equal(b, 2)
     equal(thisArg.value, 0)
@@ -32,41 +32,41 @@ class Test {
     calls.push(Call.METHOD)
   }
 
-  @Before(() => calls.push(Call.BEFORE))
-  @Before(() => calls.push(Call.BEFORE2))
-  methodWithMultipleBefore() {
+  @After(() => calls.push(Call.AFTER))
+  @After(() => calls.push(Call.AFTER2))
+  methodWithMultipleAfter() {
     calls.push(Call.METHOD)
   }
 
-  @Before(() => calls.push(Call.BEFORE))
+  @After(() => calls.push(Call.AFTER))
   methodWithReturnValue() {
     calls.push(Call.METHOD)
     return 42
   }
 
-  @Before(() => calls.push(Call.BEFORE))
+  @After(() => calls.push(Call.AFTER))
   async asyncMethod() {
     calls.push(Call.METHOD)
     return 42
   }
 
-  @Before(() => calls.push(Call.BEFORE))
+  @After(() => calls.push(Call.AFTER))
   methodThatThrows() {
     calls.push(Call.METHOD)
     throw new Error()
   }
 
-  @Before(() => {
-    calls.push(Call.BEFORE)
+  @After(() => {
+    calls.push(Call.AFTER)
     throw new Error()
   })
-  methodThrowsBefore() {
+  methodThrowsAfter() {
     calls.push(Call.METHOD)
   }
 
-  @Before(function () {
+  @After(function () {
     equal(this.value, 100)
-    calls.push(Call.BEFORE)
+    calls.push(Call.AFTER)
   })
   methodWithThisContext() {
     equal(this.value, 100)
@@ -79,48 +79,48 @@ describe(import.meta.filename, () => {
     calls.length = 0
   })
 
-  test('should call Before before the method with arguments', () => {
+  test('should call After after the method with arguments', () => {
     new Test().twoArgs(1, 2)
-    deepStrictEqual(calls, [Call.BEFORE, Call.METHOD])
+    deepStrictEqual(calls, [Call.METHOD, Call.AFTER])
   })
 
-  test('should call Before before a no-arg method', () => {
+  test('should call After after a no-arg method', () => {
     new Test().noArg()
-    deepStrictEqual(calls, [Call.BEFORE, Call.METHOD])
+    deepStrictEqual(calls, [Call.METHOD, Call.AFTER])
   })
 
-  test('should call multiple Before decorators in order', () => {
-    new Test().methodWithMultipleBefore()
-    deepStrictEqual(calls, [Call.BEFORE, Call.BEFORE2, Call.METHOD])
+  test('should call multiple After decorators in order', () => {
+    new Test().methodWithMultipleAfter()
+    deepStrictEqual(calls, [Call.METHOD, Call.AFTER2, Call.AFTER])
   })
 
   test('should not interfere with method return value', () => {
     const result = new Test().methodWithReturnValue()
-    deepStrictEqual(calls, [Call.BEFORE, Call.METHOD])
+    deepStrictEqual(calls, [Call.METHOD, Call.AFTER])
     equal(result, 42)
   })
 
-  test('should call Before before an async method', async () => {
+  test('should call After after an async method', async () => {
     const result = await new Test().asyncMethod()
-    deepStrictEqual(calls, [Call.BEFORE, Call.METHOD])
+    deepStrictEqual(calls, [Call.METHOD, Call.AFTER])
     equal(result, 42)
   })
 
   test('should handle errors thrown by the method', () => {
     const test = new Test()
-    throws(() => test.methodThatThrows())
-    deepStrictEqual(calls, [Call.BEFORE, Call.METHOD])
+    throws(test.methodThatThrows)
+    deepStrictEqual(calls, [Call.METHOD])
   })
 
-  test('should handle errors thrown by the Before function', () => {
-    throws(() => new Test().methodThrowsBefore())
-    deepStrictEqual(calls, [Call.BEFORE])
+  test('should handle errors thrown by the After function', () => {
+    throws(() => new Test().methodThrowsAfter())
+    deepStrictEqual(calls, [Call.METHOD, Call.AFTER])
   })
 
   test('should preserve "this" context within the method', () => {
     const test = new Test()
     test.value = 100
     test.methodWithThisContext()
-    deepStrictEqual(calls, [Call.BEFORE, Call.METHOD])
+    deepStrictEqual(calls, [Call.METHOD, Call.AFTER])
   })
 })

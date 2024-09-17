@@ -12,19 +12,19 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "complexity": {
+        "noForEach": "off"
+      }
     }
+  },
+  "formatter": {
+    "indentStyle": "space"
   },
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
-      "semicolons": "asNeeded",
-      "indentStyle": "space"
-    }
-  },
-  "json": {
-    "formatter": {
-      "indentStyle": "space"
+      "semicolons": "asNeeded"
     }
   }
 }
