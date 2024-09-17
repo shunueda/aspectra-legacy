@@ -1,6 +1,6 @@
 {
   "name": "aspectra",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Aspect-oriented programming!",
   "license": "MIT",
   "type": "module",
