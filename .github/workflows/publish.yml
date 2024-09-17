@@ -18,7 +18,7 @@ jobs:
           git config --global user.name "Shun Ueda"
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
@@ -29,11 +29,12 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm version patch
-      - run: pnpm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+      - run: git add package.json
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: release ${{ github.event.release.tag_name }}"
-          branch: ${{ github.event.repository.default_branch }}
+          branch: main  # Ensure the commit goes to the main branch
           file_pattern: package.json
+      - run: pnpm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
