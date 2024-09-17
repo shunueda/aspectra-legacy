@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "lib": ["esnext", "esnext.decorators"],
+    "target": "es2022",
     "experimentalDecorators": false,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
@@ -16,5 +15,5 @@
       "aspectra": ["src/index.ts"]
     }
   },
-  "exclude": ["node_modules"]
+  "exclude": ["dist", "node_modules"]
 }

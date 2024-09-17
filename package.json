@@ -5,6 +5,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
+    "build": "tsup ",
     "format": "biome format --write",
     "lint": "biome lint --write",
     "check": "biome check --write",
@@ -19,6 +20,7 @@
     "commitizen": "^4.3.0",
     "cz-conventional-changelog": "^3.3.0",
     "lefthook": "^1.7.15",
+    "tsup": "^8.2.4",
     "tsx": "^4.19.1"
   },
   "peerDependencies": {

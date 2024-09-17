@@ -79,17 +79,17 @@ describe(import.meta.filename, () => {
     calls.length = 0
   })
 
-  test('should call After after the method with arguments', () => {
+  test(`should call ${After.name} after the method with arguments`, () => {
     new Test().twoArgs(1, 2)
     deepStrictEqual(calls, [Call.METHOD, Call.AFTER])
   })
 
-  test('should call After after a no-arg method', () => {
+  test(`should call ${After.name} after a no-arg method`, () => {
     new Test().noArg()
     deepStrictEqual(calls, [Call.METHOD, Call.AFTER])
   })
 
-  test('should call multiple After decorators in order', () => {
+  test(`should call multiple ${After.name} decorators in order`, () => {
     new Test().methodWithMultipleAfter()
     deepStrictEqual(calls, [Call.METHOD, Call.AFTER2, Call.AFTER])
   })
@@ -100,7 +100,7 @@ describe(import.meta.filename, () => {
     equal(result, 42)
   })
 
-  test('should call After after an async method', async () => {
+  test(`should call ${After.name} after an async method`, async () => {
     const result = await new Test().asyncMethod()
     deepStrictEqual(calls, [Call.METHOD, Call.AFTER])
     equal(result, 42)
@@ -112,12 +112,12 @@ describe(import.meta.filename, () => {
     deepStrictEqual(calls, [Call.METHOD])
   })
 
-  test('should handle errors thrown by the After function', () => {
+  test(`should handle errors thrown by the ${After.name} function`, () => {
     throws(() => new Test().methodThrowsAfter())
     deepStrictEqual(calls, [Call.METHOD, Call.AFTER])
   })
 
-  test('should preserve "this" context within the method', () => {
+  test(`should preserve 'this' context within the method`, () => {
     const test = new Test()
     test.value = 100
     test.methodWithThisContext()
