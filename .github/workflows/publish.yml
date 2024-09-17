@@ -6,12 +6,19 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     strategy:
       matrix:
         node-version: [ 22 ]
     steps:
       - uses: Kesin11/actions-timeline@v2
+      - run: |
+          git config --global user.email "me@shu.nu"
+          git config --global user.name "Shun Ueda"
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
