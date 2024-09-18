@@ -14,5 +14,5 @@ export function Singleton<T extends AnyClassWithNoArgs>(
       // biome-ignore lint/correctness/noUnreachableSuper: Properly handled
       instance = super() as unknown as T
     }
-  } as typeof target
+  } as T
 }
