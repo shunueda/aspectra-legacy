@@ -6,11 +6,11 @@ interface Injectable<T> extends Class<T> {
   [identifier]?: T
 }
 
-export function Inject<T, K extends keyof T>(injectable: Injectable<T[K]>) {
-  return (_: unknown, context: ClassFieldDecoratorContext<T, T[K]>) => {
+export function Inject<T, K extends keyof T, M extends T[K]>(module: Class<M>) {
+  return (_: unknown, context: ClassFieldDecoratorContext<T, M>) => {
     context.addInitializer(function () {
-      const name = context.name as K
-      this[name] = injectable[identifier] ||= new injectable()
+      this[context.name as K] = (module as Injectable<M>)[identifier] ||=
+        Reflect.construct(module, [])
     })
   }
 }

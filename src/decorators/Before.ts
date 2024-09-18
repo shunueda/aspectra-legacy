@@ -1,15 +1,12 @@
-import type { Args } from '../types'
+import type { Args, Func } from '../types'
 
-export function Before<T, U extends Args, R>(
-  func: (this: T, ...args: [...U, T]) => void,
-) {
+export function Before<T, U extends Args, R>(func: Func<[...U, T], void, T>) {
   return (
-    target: (this: T, ...args: U) => R,
-    _: ClassMethodDecoratorContext<T, (this: T, ...args: U) => R>,
-  ) => {
-    return function wrapper(this: T, ...args: U): R {
+    target: Func<U, R, T>,
+    _: ClassMethodDecoratorContext<T, typeof target>,
+  ) =>
+    function (this: T, ...args: U): R {
       func.call(this, ...args, this)
-      return target.call(this, ...args)
+      return target.apply(this, args)
     }
-  }
 }

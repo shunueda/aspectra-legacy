@@ -1,9 +1,11 @@
 export type Args = unknown[]
 export type NoArgs = []
-export type Class<T> = new (...args: Args) => T
 
-export type Func<Args extends unknown[], R> = (...args: Args) => R
-export type Func0<R> = Func<NoArgs, R>
-export type Func1<A, R> = Func<[A], R>
-export type Func2<A, B, R> = Func<[A, B], R>
-export type Func3<A, B, C, R> = Func<[A, B, C], R>
+// biome-ignore lint/complexity/noBannedTypes: Definition
+export interface Class<T, A extends Args = unknown[]> extends Function {
+  new (...args: A): T
+}
+
+export type Func<A extends Args, R, T = unknown> = (this: T, ...args: A) => R
+export type Func0<R, T = unknown> = Func<NoArgs, R, T>
+export type Func1<A, R, T = unknown> = Func<[A], R, T>
