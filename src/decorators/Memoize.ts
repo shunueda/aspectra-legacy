@@ -1,7 +1,7 @@
-import hash from 'object-hash'
-import type { Args, Func } from '../types'
+import type { Args, Func, Serializable } from '../types'
+import { hash } from '../util/hash'
 
-export function Memoize<T, U extends Args, R>(
+export function Memoize<T, U extends Args & Serializable, R>(
   target: Func<U, R>,
   context: ClassMethodDecoratorContext<T, typeof target>,
 ) {
