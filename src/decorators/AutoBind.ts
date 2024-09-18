@@ -9,9 +9,7 @@ export function AutoBind<T extends AnyClass>(
       super(...args)
       Object.getOwnPropertyNames(target.prototype)
         .filter(
-          (key) =>
-            Object.getOwnPropertyDescriptor(target.prototype, key)
-              ?.configurable,
+          (key) => key !== 'constructor' && typeof this[key] === 'function',
         )
         .forEach((key) => {
           this[key] = this[key].bind(this)
