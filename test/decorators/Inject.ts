@@ -1,12 +1,12 @@
 import { equal } from 'node:assert'
 import { describe, test } from 'node:test'
-import { Bound, Inject } from 'aspectra'
+import { Bind, Inject } from 'aspectra'
 import { version } from '../../package.json'
 
 class Module {
   public readonly version = version
 
-  @Bound
+  @Bind
   public getVersion(): string {
     return this.version
   }
@@ -16,7 +16,7 @@ class Test {
   @Inject(Module)
   public readonly module!: Module
 
-  @Bound
+  @Bind
   public getModuleVersion(): string {
     return this.module.version
   }
@@ -33,7 +33,7 @@ describe(import.meta.filename, () => {
     equal(test.getModuleVersion(), version, 'Injected module version mismatch')
   })
 
-  test(`should retrieve @${Bound.name} method from injected ${Module.name}`, () => {
+  test(`should retrieve @${Bind.name} method from injected ${Module.name}`, () => {
     const { getVersion } = new Test().module
     equal(getVersion(), version, 'Injected module version mismatch')
   })

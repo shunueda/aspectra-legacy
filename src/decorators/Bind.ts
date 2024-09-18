@@ -1,6 +1,6 @@
 import type { Func0 } from '../types'
 
-export function Bound<T, R>(
+export function Bind<T, R>(
   target: Func0<R, T>,
   context: ClassMethodDecoratorContext<T, typeof target>,
 ) {

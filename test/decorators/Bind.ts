@@ -1,16 +1,16 @@
 import { equal } from 'node:assert'
 import { describe, test } from 'node:test'
-import { Bound } from 'aspectra'
+import { Bind } from 'aspectra'
 
 class Test {
   constructor(private value: number) {}
 
-  @Bound
+  @Bind
   public retrieve() {
     return this.value
   }
 
-  @Bound
+  @Bind
   public increment() {
     this.value++
   }
