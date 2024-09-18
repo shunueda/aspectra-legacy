@@ -20,7 +20,7 @@ class TestBase {
 }
 
 // biome-ignore lint/style/noNonNullAssertion: Initialization in beforeEach
-let Test: Class<TestBase, []> = null!
+let Test: Class<TestBase> = null!
 
 describe(import.meta.filename, () => {
   beforeEach(() => {
