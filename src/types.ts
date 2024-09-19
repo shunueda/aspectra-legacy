@@ -18,7 +18,6 @@ export type Func0<R, T = unknown> = Func<NoArg, R, T>
 export type Serializable =
   | string
   | number
-  | bigint
   | boolean
   | null
   | undefined

@@ -23,8 +23,5 @@ function serialize(value: Serializable): string {
       .join(',')
     return `{${serialized}}`
   }
-  if (typeof value === 'bigint') {
-    return `"${value}"` // BigInt is serialized as a string
-  }
   return JSON.stringify(value)
 }
