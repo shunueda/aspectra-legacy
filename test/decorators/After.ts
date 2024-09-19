@@ -1,4 +1,4 @@
-import { deepStrictEqual, equal } from 'node:assert'
+import { deepStrictEqual, equal, throws } from 'node:assert'
 import { describe, test } from 'node:test'
 import { After } from 'aspectra'
 
@@ -87,21 +87,13 @@ describe(import.meta.filename, () => {
 
   test('should throw in after', () => {
     const test = new Test(0)
-    try {
-      test.throwInAfter()
-    } catch (error) {
-      equal(error instanceof Error, true)
-    }
+    throws(() => test.throwInAfter(), Error)
     deepStrictEqual(test.calls, [Call.METHOD, Call.AFTER_0])
   })
 
   test('should throw in method', () => {
     const test = new Test(0)
-    try {
-      test.throwInMethod()
-    } catch (error) {
-      equal(error instanceof Error, true)
-    }
+    throws(() => test.throwInMethod(), Error)
     deepStrictEqual(test.calls, [Call.METHOD])
   })
 })
