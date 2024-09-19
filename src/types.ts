@@ -14,7 +14,6 @@ export type AnyClassWithNoArgs = Class<any, NoArg>
 
 export type Func<A extends Args, R, T = unknown> = (this: T, ...args: A) => R
 export type Func0<R, T = unknown> = Func<NoArg, R, T>
-export type Func1<A, R, T = unknown> = Func<[A], R, T>
 
 export type Serializable =
   | string

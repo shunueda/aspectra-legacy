@@ -2,7 +2,7 @@ import type { Args, Func, Serializable } from '../types'
 import { hash } from '../util/hash'
 
 export function Memoize<T, U extends Args & Serializable, R>(
-  target: Func<U, R>,
+  target: Func<U, R, T>,
   context: ClassMethodDecoratorContext<T, typeof target>,
 ) {
   const cache = new Map<string, R>()

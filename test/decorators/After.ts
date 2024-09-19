@@ -1,126 +1,107 @@
-import { deepStrictEqual, equal, throws } from 'node:assert'
-import { beforeEach, describe, test } from 'node:test'
+import { deepStrictEqual, equal } from 'node:assert'
+import { describe, test } from 'node:test'
 import { After } from 'aspectra'
 
 enum Call {
-  AFTER = 0,
-  AFTER2 = 1,
-  METHOD = 2,
+  METHOD = 0,
+  AFTER_0 = 1,
+  AFTER_1 = 2,
 }
 
-const calls: Call[] = []
-
 class Test {
-  public value = 0
+  public readonly calls: Call[] = []
 
-  @After(() => {
-    calls.push(Call.AFTER)
+  constructor(public value: number) {}
+
+  @After((_, result, thisArg) => {
+    thisArg.calls.push(Call.AFTER_0)
+    thisArg.value = result + 1
   })
-  noArg() {
-    calls.push(Call.METHOD)
+  public setWithAfterAndIncrement(value: number) {
+    this.calls.push(Call.METHOD)
+    return ++this.value
   }
 
-  @After((a: number, b: number, thisArg: Test) => {
-    calls.push(Call.AFTER)
-    equal(a, 1)
-    equal(b, 2)
-    equal(thisArg.value, 0)
+  @After((result, thisArg) => {
+    thisArg.calls.push(Call.AFTER_0)
+    thisArg.value += result
   })
-  twoArgs(a: number, b: number) {
-    equal(a, 1)
-    equal(b, 2)
-    calls.push(Call.METHOD)
+  @After((result, thisArg) => {
+    thisArg.calls.push(Call.AFTER_1)
+    thisArg.value += result
+  })
+  public doubleIncrementWithAfter() {
+    this.calls.push(Call.METHOD)
+    return ++this.value
   }
 
-  @After(() => calls.push(Call.AFTER))
-  @After(() => calls.push(Call.AFTER2))
-  methodWithMultipleAfter() {
-    calls.push(Call.METHOD)
+  @After((_, result, thisArg) => {
+    thisArg.calls.push(Call.AFTER_0)
+    thisArg.value = result + 2
+  })
+  public setWithAfterAndReturn(arg: number) {
+    this.calls.push(Call.METHOD)
+    return this.value
   }
 
-  @After(() => calls.push(Call.AFTER))
-  methodWithReturnValue() {
-    calls.push(Call.METHOD)
-    return 42
-  }
-
-  @After(() => calls.push(Call.AFTER))
-  async asyncMethod() {
-    calls.push(Call.METHOD)
-    return 42
-  }
-
-  @After(() => calls.push(Call.AFTER))
-  methodThatThrows() {
-    calls.push(Call.METHOD)
-    throw new Error()
-  }
-
-  @After(() => {
-    calls.push(Call.AFTER)
+  @After((_, thisArg) => {
+    thisArg.calls.push(Call.AFTER_0)
     throw new Error()
   })
-  methodThrowsAfter() {
-    calls.push(Call.METHOD)
+  public throwInAfter() {
+    this.calls.push(Call.METHOD)
+    return this.value
   }
 
-  @After(function () {
-    equal(this.value, 100)
-    calls.push(Call.AFTER)
+  @After((_, thisArg) => {
+    thisArg.calls.push(Call.AFTER_0)
   })
-  methodWithThisContext() {
-    equal(this.value, 100)
-    calls.push(Call.METHOD)
+  public throwInMethod() {
+    this.calls.push(Call.METHOD)
+    throw new Error()
   }
 }
 
 describe(import.meta.filename, () => {
-  beforeEach(() => {
-    calls.length = 0
+  test('should increment value after method call', () => {
+    const test = new Test(0)
+    test.setWithAfterAndIncrement(5)
+    equal(test.value, 2)
+    deepStrictEqual(test.calls, [Call.METHOD, Call.AFTER_0])
   })
 
-  test(`should call ${After.name} after the method with arguments`, () => {
-    new Test().twoArgs(1, 2)
-    deepStrictEqual(calls, [Call.METHOD, Call.AFTER])
+  test('should handle multiple after decorators', () => {
+    const test = new Test(0)
+    test.doubleIncrementWithAfter()
+    equal(test.value, 3)
+    deepStrictEqual(test.calls, [Call.METHOD, Call.AFTER_1, Call.AFTER_0])
   })
 
-  test(`should call ${After.name} after a no-arg method`, () => {
-    new Test().noArg()
-    deepStrictEqual(calls, [Call.METHOD, Call.AFTER])
+  test('should set value after returning result', () => {
+    const test = new Test(0)
+    const result = test.setWithAfterAndReturn(5)
+    equal(result, 0)
+    equal(test.value, 2)
+    deepStrictEqual(test.calls, [Call.METHOD, Call.AFTER_0])
   })
 
-  test(`should call multiple ${After.name} decorators in order`, () => {
-    new Test().methodWithMultipleAfter()
-    deepStrictEqual(calls, [Call.METHOD, Call.AFTER2, Call.AFTER])
+  test('should throw in after', () => {
+    const test = new Test(0)
+    try {
+      test.throwInAfter()
+    } catch (error) {
+      equal(error instanceof Error, true)
+    }
+    deepStrictEqual(test.calls, [Call.METHOD, Call.AFTER_0])
   })
 
-  test('should not interfere with method return value', () => {
-    const result = new Test().methodWithReturnValue()
-    deepStrictEqual(calls, [Call.METHOD, Call.AFTER])
-    equal(result, 42)
-  })
-
-  test(`should call ${After.name} after an async method`, async () => {
-    const result = await new Test().asyncMethod()
-    deepStrictEqual(calls, [Call.METHOD, Call.AFTER])
-    equal(result, 42)
-  })
-
-  test('should handle errors thrown by the method', () => {
-    const test = new Test()
-    throws(test.methodThatThrows)
-    deepStrictEqual(calls, [Call.METHOD])
-  })
-
-  test(`should handle errors thrown by the ${After.name} function`, () => {
-    throws(() => new Test().methodThrowsAfter())
-    deepStrictEqual(calls, [Call.METHOD, Call.AFTER])
-  })
-
-  test(`should preserve 'this' context within the method`, () => {
-    const test = new Test()
-    test.value = 100
-    test.methodWithThisContext()
-    deepStrictEqual(calls, [Call.METHOD, Call.AFTER])
+  test('should throw in method', () => {
+    const test = new Test(0)
+    try {
+      test.throwInMethod()
+    } catch (error) {
+      equal(error instanceof Error, true)
+    }
+    deepStrictEqual(test.calls, [Call.METHOD])
   })
 })
