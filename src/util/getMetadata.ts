@@ -8,8 +8,8 @@ export function getMetadata<
   },
 >(target: T) {
   target[Symbol.metadata] ??= {}
-  // biome-ignore lint/style/noNonNullAssertion: <explanation>
+  // biome-ignore lint/style/noNonNullAssertion: Assigned above
   target[Symbol.metadata]![namespace] ??= {} satisfies DecoratorMetadataObject
-  // biome-ignore lint/style/noNonNullAssertion: <explanation>
+  // biome-ignore lint/style/noNonNullAssertion: Assigned above
   return target[Symbol.metadata]![namespace]! as DecoratorMetadataObject
 }
