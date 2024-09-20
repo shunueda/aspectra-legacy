@@ -3,7 +3,9 @@ import { hash } from '../util/hash'
 
 export function Memoize<T, U extends Args & Serializable, R>(
   target: Func<U, R, T>,
-  context: ClassMethodDecoratorContext<T, typeof target>,
+  context: ClassMethodDecoratorContext<T, typeof target> & {
+    readonly static: true
+  },
 ) {
   const cache = new Map<string, R>()
   context.addInitializer(function () {
