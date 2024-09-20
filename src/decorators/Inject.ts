@@ -1,14 +1,20 @@
 import type { Class } from '../types'
-import { getMetadata } from '../util/getMetadata'
+import { getMetadata } from '../util/metadata'
 
-const identifier = Symbol(Inject.name)
+const symbol = Symbol(Inject.name)
 
-export function Inject<T, K extends keyof T, M extends T[K]>(module: Class<M>) {
-  const metadata = getMetadata(module)
-  metadata[identifier] ??= Reflect.construct(module, [])
-  return (_: unknown, context: ClassFieldDecoratorContext<T, M>) => {
+interface InjectMetadata<T> extends DecoratorMetadataObject {
+  [symbol]?: T
+}
+
+export function Inject<T, U extends T[keyof T]>(module: Class<U>) {
+  const metadata = getMetadata<InjectMetadata<U>>(module)
+  return (_: unknown, context: ClassFieldDecoratorContext<T, U>) => {
     context.addInitializer(function () {
-      this[context.name as K] = metadata[identifier] as InstanceType<Class<M>>
+      this[context.name as keyof T] = metadata[symbol] ??= Reflect.construct(
+        module,
+        [],
+      )
     })
   }
 }
