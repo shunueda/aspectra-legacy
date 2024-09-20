@@ -3,7 +3,7 @@ import { describe, test } from 'node:test'
 import { setTimeout } from 'node:timers/promises'
 import { Throttle } from '../../src/decorators/Throttle'
 
-const interval = 4
+const interval = 10
 
 class Test {
   @Throttle(interval)
